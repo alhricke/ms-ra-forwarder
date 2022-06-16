@@ -109,7 +109,7 @@ export function convert(ssml: string, format: string) {
             console.log('ws response status', response.statusCode, response.statusMessage);
         });
 
-        ws.connect('wss://eastus.tts.speech.microsoft.com/cognitiveservices/websocket/v1?Authorization=bearer%20eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJyZWdpb24iOiJlYXN0dXMiLCJzdWJzY3JpcHRpb24taWQiOiI2MWIxODBlMmJkOGU0YWI2OGNiNmQxN2UxOWE5NjAwMiIsInByb2R1Y3QtaWQiOiJTcGVlY2hTZXJ2aWNlcy5TMCIsImNvZ25pdGl2ZS1zZXJ2aWNlcy1lbmRwb2ludCI6Imh0dHBzOi8vYXBpLmNvZ25pdGl2ZS5taWNyb3NvZnQuY29tL2ludGVybmFsL3YxLjAvIiwiYXp1cmUtcmVzb3VyY2UtaWQiOiIvc3Vic2NyaXB0aW9ucy9jMjU1ZGYzNi05NzRjLTQ2MGEtODMwYi0yNTE2NTEzYWNlYjIvcmVzb3VyY2VHcm91cHMvY3MtY29nbml0aXZlc2VydmljZXMtcHJvZC13dXMyL3Byb3ZpZGVycy9NaWNyb3NvZnQuQ29nbml0aXZlU2VydmljZXMvYWNjb3VudHMvYWNvbS1zcGVlY2gtcHJvZC1lYXN0dXMiLCJzY29wZSI6InNwZWVjaHNlcnZpY2VzIiwiYXVkIjoidXJuOm1zLnNwZWVjaHNlcnZpY2VzLmVhc3R1cyIsImV4cCI6MTY1NTM0NTQ2NSwiaXNzIjoidXJuOm1zLmNvZ25pdGl2ZXNlcnZpY2VzIn0.EG38J9JEcNtdB9ektOmxJ9ooWVO-YjcsCVboq3ZtKgc');
+        ws.connect('wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=6A5AA1D4EAFF4E9FB37E23D68491D6F4');
     });
 
 }
