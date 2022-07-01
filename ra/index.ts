@@ -71,7 +71,8 @@ export function convert(ssml: string, format: string) {
                     buffers.push(content);
                 }
             });
-            let configMessage = `Content-Type:application/json; charset=utf-8\r\nPath:speech.config\r\n\r\n
+            let d = Date();
+            let configMessage = `X-Timestamp:` + d.toString() + `\r\nContent-Type:application/json; charset=utf-8\r\nPath:speech.config\r\n\r\n
             {
                 "context": {
                     "synthesis": {
@@ -80,7 +81,8 @@ export function convert(ssml: string, format: string) {
                                 "sentenceBoundaryEnabled": "false",
                                 "wordBoundaryEnabled": "false"
                             },
-                            "outputFormat": "${format}" 
+                            "outputFormat": "${format}",
+                            "language":{"autoDetection":false}
                         }
                     }
                 }
@@ -89,7 +91,7 @@ export function convert(ssml: string, format: string) {
             console.log('ws send:', JSON.stringify(configMessage));
             connection.send(configMessage, () => {
                 const requestId = randomBytes(16).toString("hex");
-                let message = `X-RequestId:${requestId}\r\nContent-Type:application/ssml+xml\r\nPath:ssml\r\n\r\n` + ssml;
+                let message = `X-RequestId:${requestId}\r\nContent-Type:application/ssml+xml\r\nX-Timestamp:` + d.toString() + `\r\nPath:ssml\r\n\r\n` + ssml;
                 console.log('ws send:', JSON.stringify(message));
                 connection.send(message, (error) => {
                     if (error) {
