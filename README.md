@@ -2,12 +2,14 @@
 
 创建这个项目的初衷是为了能够在[阅读（legado）](https://github.com/gedoor/legado)中听“晓晓”念书。由于其中的脚本引擎不支持 WebSocket ，所以包装了一下微软 Edge 浏览器“大声朗读”的接口。
 
-如果你的项目可以使用 WebSocket ，请直接在项目中调用原接口。具体代码可以参考 [ra/index.ts](ra/index.ts)。
+如果你的项目可以使用 WebSocket ，请直接在项目中调用原接口。具体代码可以参考 [service/edge/index.ts](service/edge/index.ts)。
 
 ## 重要更改
+**2022-07-17：添加 Azure TTS API 支持（没怎么测试，不知道用起来稳不稳定）。因为调用 Azure TTS API 需要获取授权码。其它方式只需要或取一次就可以使用一段时间，而 Vercel 每次调用 API 都需要重新获取授权码。容易超时不说，也加剧了微软服务器的负担，所以不是很推荐部署在 Vercel 的用户使用（虽然也不是不能用～但是万一微软被薅痛了，又改接口就不好了😂）。**
 
 **2022-07-02：测试目前还支持的格式有 `webm-24khz-16bit-mono-opu`、`audio-24khz-48kbitrate-mono-mp3`、`audio-24khz-96kbitrate-mono-mp3`。另外今天下午开始，使用不在下拉列表中声音会出现类似 “Unsupported voice zh-CN-YunyeNeural.” 错误，后续可能也会被砍掉。且用且珍惜吧！**
 
+**2022-07-02：测试目前还支持的格式有 `webm-24khz-16bit-mono-opu`、`audio-24khz-48kbitrate-mono-mp3`、`audio-24khz-96kbitrate-mono-mp3`。另外今天下午开始，使用不在下拉列表中声音会出现类似 “Unsupported voice zh-CN-YunyeNeural.” 错误，后续可能也会被砍掉。且用且珍惜吧！**
 **2022-07-01：~~部署在中国大陆以外服务器上的服务目前只能选择 `webm-24khz-16bit-mono-opus` 格式的音频了！~~ 所以使用 Vercel 的用户需要重新部署一下。**
 
 **2022-06-16：Edge 浏览器提供的接口现在已经不能设置讲话风格了，若发现不能正常使用，请参考 [#12](https://github.com/meetcw/ms-ra-forwarder/issues/12#issuecomment-1157271193) 获取更新。**
@@ -34,32 +36,31 @@
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/p8RU3T?referralCode=-hqLZp)
 
 ### Docker部署过程
-> 请先自行安装好Docker、Docker Compose、node.js、git、tsc，不会可以找百度。
+> 请先自行安装好Docker、Docker Compose、node.js、git，不会可以找百度。
 
 # 1 拉取镜像
 ``` bash
 docker pull ljmalyp/ms-tts:latest
 ```
-
-# 2.1 进入home目录
-```bash
-cd /home
-```
-# 2.2 获取代码
-```bash
-git clone https://github.com/rogueme/ms-ra-forwarder.git
-```
-# 2.3 进入/home/ms-ra-forwarder目录
-```bash
-cd /home/ms-ra-forwarder
-```
 # 运行方式二选一
-# 3.1 运行容器（方式一）
+# 2.1 运行容器（方式一）
 ```bash
 docker run --name ms-tts -d -p 3000:3000 ljmalyp/ms-tts
 ```
-# 3.2 Docker Compose（方式二）
-### 创建 `docker-compose.yml` 文件  
+# 2.2 Docker Compose（方式二）
+# 2.2.1 进入home目录
+```bash
+cd /home
+```
+# 2.2.2 获取代码
+```bash
+git clone https://github.com/rogueme/ms-ra-forwarder.git
+```
+# 2.2.3 进入/home/ms-ra-forwarder目录
+```bash
+cd /home/ms-ra-forwarder
+```
+# 2.2.4 创建 `docker-compose.yml` 文件  
 在ms-ra-forwarder目录下创建 `docker-compose.yml` 文件并写入以下内容并保存。  
 > 无需自定义的请使用以下内容：
 ``` yaml
@@ -83,7 +84,7 @@ services:
      - "3000:3000"
     volumes:
      - ./api/:/app/api/
-     - ./ra/:/app/ra/
+     - ./service/:/app/service/
      - ./dist/:/app/dist/
      - ./public/:/app/public/
     image: ljmalyp/ms-tts:latest
@@ -91,7 +92,7 @@ services:
 在 `docker-compose.yml` 文件目录下执行  
 >　更新环境配置:
 ```bash
-docker compose up -d
+docker-compose up -d
 ```
 如docker-compose.yml文件内容未改变请执行  
 >　重启容器:
